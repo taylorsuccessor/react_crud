@@ -21,17 +21,12 @@ export default function Header() {
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
                 <Link className="nav-link" to="/">
-                  Home
+                  Show Articles
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="create-user">
-                  Create User
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="show-user">
-                  Show User
+                <Link className="nav-link" to="front-end/create-article">
+                  Create Article
                 </Link>
               </li>
             </ul>
