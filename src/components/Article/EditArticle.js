@@ -63,7 +63,7 @@ const EditArticle = () => {
       })
       .then((response) => {
         setIsLoading(false);
-        navigate("/show-article"); // Navigate on success
+        navigate("/");
       })
       .catch((error) => {
         setError(error.message);
