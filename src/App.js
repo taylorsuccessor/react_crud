@@ -17,7 +17,7 @@ function App() {
           <Routes>
           
             <Route path="/" element={<ShowArticle />} />
-            <Route path="/front-end/edit-user/:id" element={<EditArticle />} />
+            <Route path="/front-end/edit-article/:id" element={<EditArticle />} />
             <Route path="/front-end/create-article" element={<CreateArticle />} />
           </Routes>
           

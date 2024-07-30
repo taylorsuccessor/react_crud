@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { Link } from "react-router-dom";
 import Loader from "../Common/Loader";
+import defaultImage from "../../assets/default-image.png";
+import config from "../../config";
 
 const ShowArticle = () => {
-  const showArticleApi = "http://127.0.0.1:8000/api/article"; // Updated API endpoint
-  const token = "1|n750kP7nLDZcNduwK7EhLHSQGOekPQt07UlQeajE1f22573c"; // Replace with your actual token
-
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,17 +13,12 @@ const ShowArticle = () => {
   const handleDelete = async (id) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${showArticleApi}/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      if (!response.ok) {
+      const response = await api.delete(`/article/${id}`);
+      if (response.status === 200) {
+        setArticles(articles.filter((item) => item.id !== id));
+      } else {
         throw new Error("Failed to delete item");
       }
-      setArticles(articles.filter((item) => item.id !== id));
     } catch (error) {
       setError(error.message);
     } finally {
@@ -36,21 +30,19 @@ const ShowArticle = () => {
     getArticles();
   }, []);
 
-  const getArticles = () => {
-    axios
-      .get(showArticleApi, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      })
-      .then((res) => {
-        const { data, meta } = res.data;
-        setArticles(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        setError("Failed to fetch articles.");
-      });
+  const getArticles = async () => {
+    try {
+      const response = await api.get("/article");
+      const { data } = response.data;
+      setArticles(data);
+    } catch (error) {
+      console.log(error);
+      setError("Failed to fetch articles.");
+    }
+  };
+
+  const handleImageError = (e) => {
+    e.target.src = defaultImage; // Set default image on error
   };
 
   if (articles.length === 0) {
@@ -63,35 +55,46 @@ const ShowArticle = () => {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Cover Image</th>
               <th>Title</th>
               <th>Content</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {articles.map((item, i) => {
-              return (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.title}</td>
-                  <td>{item.content}</td>
-                  <td>
-                    <Link to={`/edit-article/${item.id}`}>
-                      <i className="fa fa-pencil" aria-hidden="true"></i>
-                    </Link>
-                    <Link to={`/article/${item.id}`}>
-                      <i className="fa fa-eye" aria-hidden="true"></i>
-                    </Link>
+            {articles.map((item) => (
+              <tr key={item.id}>
+              
+              <td>
+                <img
+                  src={item.article_cover_img ? `${config.imageBaseUrl}${item.article_cover_img}` : defaultImage}
+                  alt={item.title}
+                  style={{ width: '100px', height: 'auto' }}
+                  onError={handleImageError}
+                />
+              </td>
+                <td>{item.title}</td>
+                <td>{item.content}</td>
+                <td>
+                  <Link to={`/front-end/edit-article/${item.id}`}>
+                    <i className="fa fa-pencil" aria-hidden="true"></i>
+                  </Link>
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete(item.id);
+                    }}
+                  >
                     <i
                       className="fa fa-trash-o"
                       aria-hidden="true"
-                      onClick={() => handleDelete(item.id)}
+                      style={{ cursor: "pointer" }}
                     ></i>
-                  </td>
-                </tr>
-              );
-            })}
+                  </Link>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

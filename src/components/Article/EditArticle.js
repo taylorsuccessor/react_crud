@@ -1,17 +1,18 @@
-import axios from "axios";
+// src/components/EditArticle.js
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import api from "../../api"; // Import the api instance
 import Loader from "../Common/Loader";
-import "./Article.css"; // Assuming you have a CSS file for articles
+import "./Article.css";
 
 const EditArticle = () => {
   const [article, setArticle] = useState({});
+  const [articleImage, setArticleImage] = useState(null); // To hold the selected image file
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const getArticleApi = "http://localhost:3000/api/article";
-  const authToken = "1|n750kP7nLDZcNduwK7EhLHSQGOekPQt07UlQeajE1f22573c"; // Replace with your actual token
+  const getArticleApi = "/article"; // Use relative URL
 
   useEffect(() => {
     getArticle();
@@ -19,14 +20,11 @@ const EditArticle = () => {
 
   const getArticle = () => {
     setIsLoading(true);
-    axios
-      .get(`${getArticleApi}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      })
+    api
+      .get(`${getArticleApi}/${id}`)
       .then((response) => {
-        setArticle(response.data);
+        const { data } = response.data;
+        setArticle(data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -37,32 +35,35 @@ const EditArticle = () => {
   };
 
   const handleInput = (e) => {
-    e.preventDefault();
     const { name, value } = e.target;
     setArticle({ ...article, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleImageChange = (e) => {
+    setArticleImage(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    fetch(`${getArticleApi}/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(article),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+    // Creating form data to include text fields and image
+    const formData = new FormData();
+    formData.append("title", article.title);
+    formData.append("content", article.content);
+    if (articleImage) {
+      formData.append("article_cover_img", articleImage);
+    }
+
+    api
+      .post(`${getArticleApi}/${id}?_method=PUT`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
-      .then((data) => {
+      .then((response) => {
         setIsLoading(false);
-        navigate("/show-article"); // Redirect to a list of articles or any other route
+        navigate("/show-article"); // Navigate on success
       })
       .catch((error) => {
         setError(error.message);
@@ -101,6 +102,19 @@ const EditArticle = () => {
             name="content"
             value={article.content || ""}
             onChange={handleInput}
+          />
+        </div>
+        <div className="mb-3 mt-3">
+          <label htmlFor="article_cover_img" className="form-label">
+            Article Cover Image
+          </label>
+          <input
+            type="file"
+            className="form-control"
+            id="article_cover_img"
+            name="article_cover_img"
+            accept="image/*"
+            onChange={handleImageChange}
           />
         </div>
         <button type="submit" className="btn btn-primary submit-btn">
