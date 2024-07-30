@@ -17,8 +17,8 @@ function App() {
           <Routes>
           
             <Route path="/" element={<ShowArticle />} />
-            <Route path="/front-end/edit-article/:id" element={<EditArticle />} />
-            <Route path="/front-end/create-article" element={<CreateArticle />} />
+            <Route path="/edit-article/:id" element={<EditArticle />} />
+            <Route path="/create-article" element={<CreateArticle />} />
           </Routes>
           
         </div>

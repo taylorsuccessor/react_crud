@@ -25,7 +25,7 @@ export default function Header() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="front-end/create-article">
+                <Link className="nav-link" to="create-article">
                   Create Article
                 </Link>
               </li>

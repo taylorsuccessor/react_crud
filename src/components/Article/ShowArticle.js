@@ -76,7 +76,7 @@ const ShowArticle = () => {
                 <td>{item.title}</td>
                 <td>{item.content}</td>
                 <td>
-                  <Link to={`/front-end/edit-article/${item.id}`}>
+                  <Link to={`/edit-article/${item.id}`}>
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                   </Link>
                   <Link
