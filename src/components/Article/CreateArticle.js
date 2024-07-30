@@ -64,6 +64,7 @@ const CreateArticle = () => {
         {isLoading && <Loader />}
         {error && <p>Error: {error}</p>}
         <p>Article Form</p>
+        <p>We can upload image to async and queue to make it faster to upload to S3</p>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
