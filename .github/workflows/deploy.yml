@@ -37,6 +37,6 @@ jobs:
       - name: Deploy to S3
         env:
           AWS_REGION: 'ap-southeast-2'  # e.g., us-east-1
-          S3_BUCKET: 'vapor-ap-southeast-2-1722266170'
+          S3_BUCKET: 'vapor-ap-southeast-2-assets-1722266170'
         run: |
           aws s3 sync build/ s3://$S3_BUCKET/frontend-tech-test --delete
