@@ -1,42 +1,38 @@
 // src/components/EditArticle.js
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from '@services/api';
+
 import '@Article/css/Article.css';
+
 import Loader from "@components/Loader";
 
+import { useArticleQuery, useUpdateArticleMutation } from "@queries/article";
+
 const EditArticle = () => {
-  const [article, setArticle] = useState({});
-  const [articleImage, setArticleImage] = useState(null); // To hold the selected image file
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const getArticleApi = "/article"; // Use relative URL
+
+
+  const [localArticle, setLocalArticle] = useState({ title: '', content: '' });
+  const [articleImage, setArticleImage] = useState(null); // To hold the selected image file
+  const [localError, setLocalError] = useState(null);
+
+
+
+
+  const { data, isLoading, isError, error } = useArticleQuery(id);
+  const { mutate: updateArticle, isPending: isUpdating } = useUpdateArticleMutation();
 
   useEffect(() => {
-    getArticle();
-  }, [id]);
+    if (data) {
+      setLocalArticle({ title: data.title, content: data.content });
+    }
+  }, [data]);
 
-  const getArticle = () => {
-    setIsLoading(true);
-    api
-      .get(`${getArticleApi}/${id}`)
-      .then((response) => {
-        const { data } = response.data;
-        setArticle(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setError("Failed to fetch article");
-        setIsLoading(false);
-      });
-  };
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    setArticle({ ...article, [name]: value });
+    setLocalArticle((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
@@ -45,37 +41,30 @@ const EditArticle = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     // Creating form data to include text fields and image
     const formData = new FormData();
-    formData.append("title", article.title);
-    formData.append("content", article.content);
+    formData.append("title", localArticle.title);
+    formData.append("content", localArticle.content);
     if (articleImage) {
       formData.append("article_cover_img", articleImage);
     }
-
-    api
-      .post(`${getArticleApi}/${id}?_method=PUT`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setIsLoading(false);
-        navigate("/");
-      })
-      .catch((error) => {
-        setError(error.message);
-        setIsLoading(false);
-      });
+    updateArticle(
+      { id, formData },
+      {
+        onSuccess: () => navigate('/'),
+        onError: (err) => setLocalError(err.message),
+      }
+    );
   };
 
   return (
     <div className="article-form">
       <div className="heading">
-        {isLoading && <Loader />}
-        {error && <p>Error: {error}</p>}
+        {(isLoading || isUpdating) && <Loader />}
+        {(isError || localError) && (
+          <p>Error: {error?.message || localError}</p>
+        )}
         <p>Edit Article</p>
       </div>
       <form onSubmit={handleSubmit}>
@@ -88,7 +77,7 @@ const EditArticle = () => {
             className="form-control"
             id="title"
             name="title"
-            value={article.title || ""}
+            value={localArticle.title || ""}
             onChange={handleInput}
           />
         </div>
@@ -100,7 +89,7 @@ const EditArticle = () => {
             className="form-control"
             id="content"
             name="content"
-            value={article.content || ""}
+            value={localArticle.content || ""}
             onChange={handleInput}
           />
         </div>

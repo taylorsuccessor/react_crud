@@ -8,6 +8,7 @@ module.exports = {
             '@hooks': path.resolve(__dirname, 'src/hooks'),
             '@routes': path.resolve(__dirname, 'src/routes'),
             '@redux': path.resolve(__dirname, 'src/redux'),
+            '@queries': path.resolve(__dirname, 'src/queries'),
             '@assets': path.resolve(__dirname, 'src/assets'),
             '@constants': path.resolve(__dirname, 'src/Constants'),
             '@config': path.resolve(__dirname, 'src/config'),

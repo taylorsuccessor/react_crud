@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import api from '@services/api';
-
 import Loader from '@components/Loader';
 
 import '@Article/css/Article.css';
+import { EMPTY_ARTICLE } from '@constants/Article';
+import { useCreateArticleMutation } from '@queries/article';
 
 const CreateArticle = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [article, setArticle] = useState({
-    title: '',
-    content: '',
-  });
+  const [article, setArticle] = useState(EMPTY_ARTICLE);
   const [articleImage, setArticleImage] = useState(null);
+  const { mutate: createArticle, isPending: isLoading } = useCreateArticleMutation();
 
   const handleInput = (event) => {
     const { name, value } = event.target;
@@ -28,7 +25,6 @@ const CreateArticle = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsLoading(true);
 
     const formData = new FormData();
     formData.append('title', article.title);
@@ -37,29 +33,18 @@ const CreateArticle = () => {
       formData.append('article_cover_img', articleImage);
     }
 
-    try {
-      const response = await api.post('/article', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.status === 200) {
-        console.log('Article created successfully!');
-        setArticle({ title: '', content: '' });
+    createArticle(formData, {
+      onSuccess: () => {
+        setArticle(EMPTY_ARTICLE);
         setArticleImage(null);
-        navigate('/');
-      } else {
+      },
+      onError: (error) => {
         console.error('Article creation failed!');
-        setError('Article creation failed!');
-      }
-    } catch (error) {
-      console.error('Error:', error.message);
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+        setError(error.message || 'Something went wrong.');
+      },
+    });
   };
+
 
   return (
     <div className='article-form'>

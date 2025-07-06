@@ -17,6 +17,9 @@
             "@redux/*": [
                 "redux/*"
             ],
+            "@queries/*": [
+                "queries/*"
+            ],
             "@assets/*": [
                 "assets/*"
             ],
