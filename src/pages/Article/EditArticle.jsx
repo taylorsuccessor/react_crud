@@ -1,9 +1,9 @@
 // src/components/EditArticle.js
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../../api"; // Import the api instance
-import Loader from "../Common/Loader";
-import "./Article.css";
+import api from '@services/api';
+import Loader from "../../components/Loader";
+import '@Article/css/Article.css';
 
 const EditArticle = () => {
   const [article, setArticle] = useState({});

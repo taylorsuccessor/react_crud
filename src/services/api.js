@@ -1,5 +1,5 @@
 import axios from "axios";
-import config from "./config";
+import config from '@config/config';
 
 const api = axios.create({
   baseURL: `${config.apiBaseUrl}`,
@@ -10,14 +10,14 @@ const api = axios.create({
 
 const fetchAndStoreToken = async () => {
   try {
-  const response = await axios.post(`${config.apiBaseUrl}/auth/get-token`, {
-    email: "admin@gmail.com",
-    password: "admin",
-    device_name: "react",
-  });
-  const { token } = response.data;
-  localStorage.setItem("token", token); // Store the token in local storage
-  return token;
+    const response = await axios.post(`${config.apiBaseUrl}/auth/get-token`, {
+      email: "admin@gmail.com",
+      password: "admin",
+      device_name: "react",
+    });
+    const { token } = response.data;
+    localStorage.setItem("token", token); // Store the token in local storage
+    return token;
   } catch (error) {
     console.error('Failed to fetch token:', error);
     throw error; // Rethrow the error to handle it in the interceptor

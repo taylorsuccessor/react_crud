@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api';
-import Loader from '../Common/Loader';
-import './Article.css';
+
+import api from '@services/api';
+
+import Loader from '@components/Loader';
+
+import '@Article/css/Article.css';
 
 const CreateArticle = () => {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import React from 'react'
-import './Common.css';
+import "@Layouts/css/Layout.css";
 export default function Footer() {
   return (
     <div className='footer'>
-        Footer
+      Footer
     </div>
   )
 }

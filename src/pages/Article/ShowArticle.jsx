@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import api from "../../api";
 import { Link } from "react-router-dom";
-import Loader from "../Common/Loader";
-import defaultImage from "../../assets/default-image.png";
-import config from "../../config";
+
+import api from '@services/api';
+import config from "@config/config";
+import Loader from "@components/Loader";
+
+import defaultImage from "@assets/img/default-image.png";
 
 const ShowArticle = () => {
   const [articles, setArticles] = useState([]);
@@ -64,15 +66,15 @@ const ShowArticle = () => {
           <tbody>
             {articles.map((item) => (
               <tr key={item.id}>
-              
-              <td>
-                <img
-                  src={item.article_cover_img ? `${config.imageBaseUrl}${item.article_cover_img}` : defaultImage}
-                  alt={item.title}
-                  style={{ width: '100px', height: 'auto' }}
-                  onError={handleImageError}
-                />
-              </td>
+
+                <td>
+                  <img
+                    src={item.article_cover_img ? `${config.imageBaseUrl}${item.article_cover_img}` : defaultImage}
+                    alt={item.title}
+                    style={{ width: '100px', height: 'auto' }}
+                    onError={handleImageError}
+                  />
+                </td>
                 <td>{item.title}</td>
                 <td>{item.content}</td>
                 <td>

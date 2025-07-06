@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Common.css";
-import defaultImage from "../../assets/default-image.png";
+
+import "@Layouts/css/Layout.css";
+
+import defaultImage from "@assets/img/default-image.png";
 
 export default function Header() {
   return (
