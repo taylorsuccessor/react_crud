@@ -5,17 +5,4 @@ img {
     width: 100%;
     height: auto;
 }
-.navbar-logo {
-    max-width: 200px;
-    background-color: white;
-    padding: 10px;
-}
 
-.nav-link {
-    border-right: 1px solid #fff;
-    border-left: 1px solid #fff;
-}
-.nav-link:hover {
-    background-color: #fff;
-    color: #000;
-}
